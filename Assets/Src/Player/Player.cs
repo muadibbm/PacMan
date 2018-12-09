@@ -24,6 +24,10 @@ public class Player : MonoBehaviour {
         this.UpdateLocomotion(new Vector2(xDir, yDir));
     }
 
+    public PathNode GetCurrent() {
+        return this.current;
+    }
+
     private void UpdateLocomotion(Vector2 dir) {
         // horizontal direction takes precedence over vertical
         if(dir.x != 0) {

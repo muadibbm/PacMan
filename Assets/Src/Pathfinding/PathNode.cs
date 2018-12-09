@@ -3,6 +3,12 @@
 public class PathNode : MonoBehaviour {
 
     public PathNode[] neighbors;
+    public enum Type { General, Player, NPC }
+    public Type type; // determines which type of agent can use this pathnode
+
+#if UNITY_EDITOR
+    public Color gizmosColor;
+#endif
 
     public PathNode right {
         get {
@@ -47,7 +53,7 @@ public class PathNode : MonoBehaviour {
 
 #if UNITY_EDITOR
     private void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = this.gizmosColor;
         Gizmos.DrawSphere(this.transform.position, 0.1f);
         if (this.neighbors != null)
             for (int i = 0; i < this.neighbors.Length; i++)

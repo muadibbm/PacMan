@@ -23,6 +23,7 @@ public class Toolbox : MonoBehaviour {
 
 	void Awake () {
         this.AddTool<GameInput>("GameInput");
+        this.AddTool<GameManager>("GameManager");
     }
 
     public ObjType GetTool <ObjType> (string objName) where ObjType : Component {
