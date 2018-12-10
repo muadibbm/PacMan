@@ -15,6 +15,7 @@ public class AStar {
     }
 
     private Node[] nodes;
+    private int loopCounter;
 
     public AStar(PathNode[] graph) {
         this.graph = graph;
@@ -27,17 +28,37 @@ public class AStar {
     public PathNode FindNextNode(PathNode current, PathNode dest) {
         List<PathNode> path = new List<PathNode>();
         PathNode currentNode = dest;
+
         this.CalculatePath(current, dest);
+
         while (currentNode != current) {
-            if (currentNode == null) break;
+            if (currentNode == null || this.loopCounter > this.nodes.Length) break;
             path.Add(currentNode);
             currentNode = this.nodes[GetIndexWith(currentNode)].parent;
+            this.loopCounter++;
         }
-        path.Reverse();
-        if (path.Count != 0)
-            return path[0];
-        else
-            return null;
+        this.loopCounter = 0;
+
+        if (path.Count != 0) {
+            path.Reverse();
+            PathNode first = path[0];
+            path.Clear();
+            path = null;
+            return first;
+        }
+        return null;
+    }
+
+    public PathNode GetClosestNode(UnityEngine.Vector3 position) {
+        PathNode closest = this.graph[0];
+        float closestDist = (closest.transform.position - position).magnitude;
+        for(int i = 1; i < this.graph.Length; i++) {
+            if((this.graph[i].transform.position - position).magnitude < closestDist) {
+                closest = this.graph[i];
+                closestDist = (closest.transform.position - position).magnitude;
+            }
+        }
+        return closest;
     }
     
     private void CalculatePath(PathNode start, PathNode goal) {
@@ -75,6 +96,10 @@ public class AStar {
             }
             closedList.Add(q);
         }
+        openList.Clear();
+        openList = null;
+        closedList.Clear();
+        closedList = null;
     }
 
     private float GetEuclideanDist(PathNode node1, PathNode node2) {

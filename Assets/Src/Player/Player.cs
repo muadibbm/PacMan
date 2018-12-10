@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
         this.current = this.start;
     }
 
-    private void FixedUpdate () {
+    private void Update () {
         // aquire input directions from GameInput
         float xDir = ((this.gi.rightPressed) ? 1f : -1f) + ((this.gi.leftPressed) ? -1f : 1f);
         float yDir = ((this.gi.upPressed) ? 1f : -1f) + ((this.gi.downPressed) ? -1f : 1f);
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour {
             if ((this.transform.position - this.current.transform.position).magnitude <= this.minReachDistance) {
                 this.xMotion = this.yMotion = false;
             }
-            this.transform.position += motion.normalized * this.speed * Time.fixedDeltaTime;
+            this.transform.position += motion.normalized * this.speed * Time.deltaTime;
             // set the direction of player facing towards
             this.transform.right = new Vector3(this.transform.right.x + dir.x, this.transform.right.y + dir.y, this.transform.right.z).normalized;
         }
