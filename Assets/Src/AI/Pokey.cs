@@ -8,6 +8,9 @@ public class Pokey : Ghost {
         if((this.transform.position - this.player.transform.position).magnitude < this.minDistToScatter) {
             return this.aStar.GetClosestNode(this.player.transform.position + 8f * this.player.transform.right);
         }
+        if (this.player.alreadyTeleported) {
+            return this.player.GetPrevNode();
+        }
         return this.player.GetCurrent();
     }
 }

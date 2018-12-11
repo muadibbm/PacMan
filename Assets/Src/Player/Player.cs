@@ -6,9 +6,13 @@ public class Player : MonoBehaviour {
     public float minReachDistance;
     public PathNode start;
 
+    [HideInInspector]
+    public bool alreadyTeleported;
+
     private GameInput gi;
     private PathNode current;
     private PathNode target;
+    private PathNode prevNode;
     private bool xMotion;
     private bool yMotion;
 
@@ -22,6 +26,16 @@ public class Player : MonoBehaviour {
         float xDir = ((this.gi.rightPressed) ? 1f : -1f) + ((this.gi.leftPressed) ? -1f : 1f);
         float yDir = ((this.gi.upPressed) ? 1f : -1f) + ((this.gi.downPressed) ? -1f : 1f);
         this.UpdateLocomotion(new Vector2(xDir, yDir));
+    }
+
+    public void Teleport(PathNode target) {
+        this.prevNode = this.current;
+        this.current = target;
+        this.transform.position = this.current.transform.position;
+    }
+
+    public PathNode GetPrevNode() {
+        return this.prevNode;
     }
 
     public PathNode GetCurrent() {
@@ -51,7 +65,9 @@ public class Player : MonoBehaviour {
             }
             this.transform.position += motion.normalized * this.speed * Time.deltaTime;
             // set the direction of player facing towards
-            this.transform.right = new Vector3(this.transform.right.x + dir.x, this.transform.right.y + dir.y, this.transform.right.z).normalized;
+            this.transform.right = new Vector3(this.transform.right.x + ((this.xMotion) ? dir.x : 0f), 
+                                               this.transform.right.y + ((this.yMotion) ? dir.y : 0f), 
+                                               this.transform.right.z).normalized;
         }
     }
 }

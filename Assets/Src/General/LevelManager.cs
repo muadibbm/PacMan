@@ -3,6 +3,11 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour {
 
+    public int scoreDot;
+    public int scoreGhost;
+
+    public TextMesh scoreText;
+
     [HideInInspector]
     public PathNode[] graph;
     [HideInInspector]
@@ -10,8 +15,10 @@ public class LevelManager : MonoBehaviour {
     [HideInInspector]
     public Ghost [] ghosts;
 
+    private int score;
     private Dot[] dots;
     private Fruit[] fruits;
+    private Coroutine escapeRoutine;
 
     private void Awake() {
         this.graph = FindObjectsOfType<PathNode>();
@@ -23,12 +30,23 @@ public class LevelManager : MonoBehaviour {
             this.ghosts[i].SetLevelManager(this);
         for (int i = 0; i < this.fruits.Length; i++)
             this.fruits[i].SetLevelManager(this);
+        for (int i = 0; i < this.dots.Length; i++)
+            this.dots[i].SetLevelManager(this);
     }
 
     private void Update() {
-        if(this.AllDotsAreEaten()) {
+        this.scoreText.text = "Score   " + this.score.ToString();
+        if (this.AllDotsAreEaten()) {
             this.ReloadLevel();
         }
+    }
+
+    public void ScoreDot() {
+        this.score += this.scoreDot;
+    }
+
+    public void ScoreGhost() {
+        this.score += this.scoreGhost;
     }
 
     public void PacManLost() {
@@ -36,7 +54,8 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void TriggerEscapeMode(float duration) {
-        this.StartCoroutine(this.EscapeMode(duration));
+        if (this.escapeRoutine != null) this.StopCoroutine(this.escapeRoutine);
+        this.escapeRoutine = this.StartCoroutine(this.EscapeMode(duration));
     }
 
     private IEnumerator EscapeMode(float duration) {

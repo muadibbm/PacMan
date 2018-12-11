@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+/* Parent abstract class for Ghost AI */
 public abstract class Ghost : MonoBehaviour {
 
     public PathNode start;
@@ -10,7 +11,9 @@ public abstract class Ghost : MonoBehaviour {
 
     [HideInInspector]
     public bool escape;
-    
+    [HideInInspector]
+    public bool alreadyTeleported;
+
     protected AStar aStar;
     protected Player player;
 
@@ -35,6 +38,15 @@ public abstract class Ghost : MonoBehaviour {
         this.rend = this.GetComponent<SpriteRenderer>();
     }
 
+    public void Teleport(PathNode target) {
+        this.current = target;
+        this.transform.position = this.current.transform.position;
+    }
+
+    public PathNode GetCurrent() {
+        return this.current;
+    }
+
     private void OnTriggerEnter2D(Collider2D other) {
         if(other.tag == "Player") {
             if(this.escape) {
@@ -42,6 +54,7 @@ public abstract class Ghost : MonoBehaviour {
                 this.transform.position = this.start.transform.position;
                 this.escape = false;
                 this.dead = true;
+                this.lm.ScoreGhost();
             }
             else {
                 this.lm.PacManLost();

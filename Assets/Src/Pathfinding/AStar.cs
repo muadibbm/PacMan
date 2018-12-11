@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+/* Takes care of the pathfinding for the ghosts */
 public class AStar {
 
     private PathNode[] graph;
